@@ -557,31 +557,23 @@ void PlayerSelectScreen_Main(void *objPtr)
     SetRenderMatrix(NULL);
     SetRenderVertexColor(0xFF, 0xFF, 0xFF);
 
-#if RETRO_USE_V6
-    // i hate this logic so much aaaaaa
-    // this is RifiGD, uhmm going mentally insane thanks to RSDKv6 2018
-    int backButtonAlpha = 0;
-
-    // who the fuck designed this revision of the native objects
-    // whoever it is, i WILL find youf
-    if (Engine.gameDeviceType == RETRO_MOBILE)
-        backButtonAlpha = 128;
-
-    if (self->backPressed){
-        RenderImage(128.0, -92.0, 160.0, 0.3, 0.3, 64.0, 64.0, 128.0, 128.0, 128.0, 128.0, backButtonAlpha, self->textureArrows);
-
-    }
-    else{
-        RenderImage(128.0, -92.0, 160.0, 0.3, 0.3, 64.0, 64.0, 128.0, 128.0, 128.0, 0.0, backButtonAlpha, self->textureArrows);
-    }
-#else 
-
+#if !RETRO_USE_V6
     if (self->backPressed){
         RenderImage(128.0, -92.0, 160.0, 0.3, 0.3, 64.0, 64.0, 128.0, 128.0, 128.0, 128.0, self->alpha, self->textureArrows);
 
     }
     else{
         RenderImage(128.0, -92.0, 160.0, 0.3, 0.3, 64.0, 64.0, 128.0, 128.0, 128.0, 0.0, self->alpha, self->textureArrows);
+    }
+#else
+    if (Engine.gameDeviceType == RETRO_MOBILE){
+        if (self->backPressed){
+            RenderImage(128.0, -92.0, 160.0, 0.3, 0.3, 64.0, 64.0, 128.0, 128.0, 128.0, 128.0, self->alpha, self->textureArrows);
+
+        }
+        else{
+            RenderImage(128.0, -92.0, 160.0, 0.3, 0.3, 64.0, 64.0, 128.0, 128.0, 128.0, 0.0, self->alpha, self->textureArrows);
+        }
     }
 #endif
 }

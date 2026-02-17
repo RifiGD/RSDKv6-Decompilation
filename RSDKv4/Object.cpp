@@ -398,8 +398,13 @@ void InitNativeObjectSystem()
         saveGame->vDPadY_Move     = 184;
         saveGame->vDPadX_Jump     = -56;
         saveGame->vDPadY_Jump     = 188;
+    #if !RETRO_USE_V6
         saveGame->tailsUnlocked   = Engine.gameType != GAME_SONIC1;
         saveGame->knuxUnlocked    = Engine.gameType != GAME_SONIC1;
+    #else
+        saveGame->tailsUnlocked   = Engine.gameType != GAME_SONIC1 && Engine.gameType != GAME_SONICCD;
+        saveGame->knuxUnlocked    = Engine.gameType != GAME_SONIC1 && Engine.gameType != GAME_SONICCD;
+    #endif
         saveGame->unlockedActs    = 0;
         WriteSaveRAMData();
     }

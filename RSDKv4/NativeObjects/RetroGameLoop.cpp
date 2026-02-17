@@ -25,12 +25,13 @@ void showPauseScreenJava()
 void eventPauseMenuVisible(bool paused, int state)
 {
     if (paused){
+        //pretty much InitPauseMenu but without creating the entities
         mixFiltersOnJekyll = false;
         PauseSound();
         ClearNativeObjects();
         return;
     }
-    if (state == 3){
+    if (state == JAVAPAUSEMENU_STATE_EXIT){ // == 3
         Engine.gameMode = ENGINE_RESETGAME;
         if ((GetGlobalVariableByName("options.gameMode"))< 2){
             Engine.gameMode = ENGINE_ENDGAME;
@@ -38,8 +39,8 @@ void eventPauseMenuVisible(bool paused, int state)
         SetGlobalVariableByName("timeAttack.result", 1000000);
     }
     else{
-        if (state != 1){
-            if (state == 0){
+        if (state != JAVAPAUSEMENU_STATE_RESTART){ //!= 1
+            if (state == JAVAPAUSEMENU_STATE_RESUME){
                 mixFiltersOnJekyll = true;
                 RenderRetroBuffer(0x40,0x43200000);
                 ClearNativeObjects();
@@ -50,12 +51,12 @@ void eventPauseMenuVisible(bool paused, int state)
             }
         return;
         }
-        stageMode = 0;
-        Engine.gameMode = 6;
+        stageMode = STAGEMODE_LOAD;
+        Engine.gameMode = ENGINE_EXITPAUSE;
         if ((GetGlobalVariableByName("options.gameMode")) < 2){
             SetGlobalVariableByName("player.lives", (GetGlobalVariableByName("player.lives") - 1)); //the decompiler output tempGlobalVar + -1, which is the exact thing
         }
-        if (activeStageList == 1){
+        if (activeStageList == STAGELIST_REGULAR){
             SetGlobalVariableByName("lampPostID", 0);
             SetGlobalVariableByName("starPostID", 0);
         }
@@ -92,8 +93,6 @@ bool restartBtnUnAvailable()
 
     return true;
 }
-
-
 #endif
 
 void RetroGameLoop_Create(void *objPtr) { mixFiltersOnJekyll = Engine.useHighResAssets; }

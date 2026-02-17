@@ -5,13 +5,43 @@ void VirtualDPad_Create(void *objPtr)
     RSDK_THIS(VirtualDPad);
     SaveGame *saveGame = (SaveGame *)saveRAM;
 
+    #if RETRO_USE_V6
+    int SaveOffset = 0;
+    #endif
+
     float screenXCenter = SCREEN_CENTERX;
     float screenYCenter = SCREEN_CENTERY;
+
+    #if RETRO_USE_V6
+    SaveOffset = GET_IDX_SO(0xb);
+    self->moveX         = (saveGame->vDPadX_Move + SaveOffset) - screenXCenter;
+    #else
     self->moveX         = saveGame->vDPadX_Move - screenXCenter;
+    #endif
+
+    #if RETRO_USE_V6
+    SaveOffset = GET_IDX_SO(0xc);
+    self->moveY         = -((saveGame->vDPadY_Move + SaveOffset) - screenYCenter);
+    #else
     self->moveY         = -(saveGame->vDPadY_Move - screenYCenter);
+    #endif
+
+    #if RETRO_USE_V6
+    SaveOffset = GET_IDX_SO(0xd);
+    self->jumpX         = (saveGame->vDPadX_Jump + SaveOffset) + screenXCenter;
+    #else
     self->jumpX         = saveGame->vDPadX_Jump + screenXCenter;
+    #endif
+
     self->pauseY        = 104.0f;
+    
+    #if RETRO_USE_V6
+    SaveOffset = GET_IDX_SO(0xe);
+    self->jumpY         = -((saveGame->vDPadY_Jump + SaveOffset) - screenYCenter);
+    #else
     self->jumpY         = -(saveGame->vDPadY_Jump - screenYCenter);
+    #endif
+
     self->pauseX        = screenXCenter - 76.0f;
     self->pauseX_S      = screenXCenter - 52.0f;
     self->moveFinger    = -1;
@@ -30,9 +60,19 @@ void VirtualDPad_Main(void *objPtr)
 {
     RSDK_THIS(VirtualDPad);
     SaveGame *saveGame = (SaveGame *)saveRAM;
+    #if RETRO_USE_V6
+    int SaveOffset = 0;
+    #endif
 
     if (globalVariables[self->useTouchControls] && (!globalVariables[self->usePhysicalControls] || self->editMode)) {
+
+        #if !RETRO_USE_V6
         if (self->alpha < saveGame->vDPadOpacity) {
+        #else
+        //10 seems to handle the offset for the opacity
+        SaveOffset = GET_IDX_SO(10);
+        if (self->alpha < (saveGame->vDPadOpacity + SaveOffset)) {
+        #endif
             self->alpha += 4;
             if (self->pauseAlpha < 0xFF) {
                 self->pauseAlpha = (self->alpha << 8) / saveGame->vDPadOpacity;
@@ -51,7 +91,15 @@ void VirtualDPad_Main(void *objPtr)
         RenderImage(self->moveX, self->moveY, 160.0, self->moveSize, self->moveSize, 128.0, 128.0, 256.0, 256.0, 0.0, 0.0, self->alpha,
                     self->textureID);
 
+        #if RETRO_USE_V6
+        SaveOffset = GET_IDX_SO(10);
+        #endif
+
+        #if !RETRO_USE_V6
         if (self->alpha != saveGame->vDPadOpacity) {
+        #else
+        if (self->alpha != (saveGame->vDPadOpacity + SaveOffset)) {
+        #endif
             self->offsetX = 0.0;
             self->offsetY = 0.0;
         }

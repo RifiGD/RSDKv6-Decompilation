@@ -9,6 +9,12 @@ void RetroGameLoop_Create(void *objPtr);
 void RetroGameLoop_Main(void *objPtr);
 
 #if RETRO_USE_V6
+enum JavaPauseMenuStates{
+    JAVAPAUSEMENU_STATE_RESUME    = 0,
+    JAVAPAUSEMENU_STATE_RESTART   = 1,
+    JAVAPAUSEMENU_STATE_EXIT      = 3,
+};
+
 void eventPauseMenuVisible(bool paused, int state); // not sure about the name "state", best i could come up with based on the output
 void showPauseScreenJava(); // as much as im gonna get without decompiling the classes files in the apk
 
