@@ -51,6 +51,9 @@ struct SaveGame {
     int records[0x80];   // Values 64-192
     int padding[0x73F];  // Values 193-2047
     int customSS[0x400]; // Values 2048-3072
+#if RETRO_USE_V6
+    int saveOffsetCD = 4000; // this is taken from v6's InitNativeObjectSystem, but it is extremely weird
+#endif
 };
 
 enum OnlineMenuTypes {

@@ -391,6 +391,7 @@ void InitNativeObjectSystem()
         saveGame->musVolume       = MAX_VOLUME;
         saveGame->sfxVolume       = MAX_VOLUME;
         saveGame->spindashEnabled = true;
+    #if !RETRO_USE_V6
         saveGame->boxRegion       = 0;
         saveGame->vDPadSize       = 64;
         saveGame->vDPadOpacity    = 160;
@@ -398,6 +399,31 @@ void InitNativeObjectSystem()
         saveGame->vDPadY_Move     = 184;
         saveGame->vDPadX_Jump     = -56;
         saveGame->vDPadY_Jump     = 188;
+    #else
+        // offsets :O
+        if (Engine.gameType != GAME_SONICCD)
+        {
+            saveGame->boxRegion       = 0;
+            saveGame->vDPadSize       = 64;
+            saveGame->vDPadOpacity    = 160;
+            saveGame->vDPadX_Move     = 56;
+            saveGame->vDPadY_Move     = 184;
+            saveGame->vDPadX_Jump     = -56;
+            saveGame->vDPadY_Jump     = 188;
+        }
+        else
+        {
+        // this is... weird but it's from the binary i guess
+        // the offsets are all set to 4000 if it is sonic cd
+            saveGame->saveOffsetCD    = 0;
+            saveGame->saveOffsetCD    = 64;
+            saveGame->saveOffsetCD    = 160;
+            saveGame->saveOffsetCD    = 56;
+            saveGame->saveOffsetCD    = 184;
+            saveGame->saveOffsetCD    = -56;
+            saveGame->saveOffsetCD    = 188;
+        }
+    #endif
     #if !RETRO_USE_V6
         saveGame->tailsUnlocked   = Engine.gameType != GAME_SONIC1;
         saveGame->knuxUnlocked    = Engine.gameType != GAME_SONIC1;
@@ -422,14 +448,33 @@ void InitNativeObjectSystem()
 
     if (!saveGame->musVolume)
         musicEnabled = false;
-
+#if !RETRO_USE_V6
     if (!saveGame->vDPadX_Move) {
         saveGame->vDPadX_Move = 60;
         saveGame->vDPadY_Move = 176;
         saveGame->vDPadX_Jump = -56;
         saveGame->vDPadY_Jump = 180;
     }
-
+#else
+    if (Engine.gameType != GAME_SONICCD)
+    {
+        if (!saveGame->vDPadX_Move) {
+            saveGame->vDPadX_Move = 60;
+            saveGame->vDPadY_Move = 176;
+            saveGame->vDPadX_Jump = -56;
+            saveGame->vDPadY_Jump = 180;
+        }
+    }
+    else
+    {
+        if (!saveGame->saveOffsetCD) {
+            saveGame->saveOffsetCD = 60;
+            saveGame->saveOffsetCD = 176;
+            saveGame->saveOffsetCD = -56;
+            saveGame->saveOffsetCD = 180;
+        }
+    }    
+#endif
     Engine.globalBoxRegion = saveGame->boxRegion;
     SetGameVolumes(saveGame->musVolume, saveGame->sfxVolume);
 #if !RETRO_USE_ORIGINAL_CODE
