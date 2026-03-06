@@ -28,7 +28,7 @@ void MenuControl_Create(void *objPtr)
         self->buttonCount++;
     }
 
-    if (Engine.onlineActive || !Engine.onlineActive) { // remove the second boolean once done
+    if (Engine.onlineActive) {
         self->buttons[self->buttonCount]     = CREATE_ENTITY(AchievementsButton);
         self->buttonFlags[self->buttonCount] = BUTTON_ACHIEVEMENTS;
         self->buttonCount++;

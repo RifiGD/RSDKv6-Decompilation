@@ -28,6 +28,14 @@ struct SaveFile {
     int emeralds;       // Value 5/13/21/29
     int specialStageID; // Value 6/14/22/30
     int unused;         // Value 7/15/23/31
+
+    #if RETRO_USE_V6
+    // holy shit what the fuck is this im crine
+    int scoreBonusCD = specialStageID; // in CD, scoreBonus is stored in specialStageID's place, and emeralds is stored in the unused int's place. Why? Who knows.
+    int stageIDCD = scoreBonus; // Explanation in SaveSelect_Main
+    int timeStones = stageID; // explanation in SaveSelect_Main
+    int specialStageIDCD = emeralds;
+    #endif
 };
 
 struct SaveGame {
@@ -52,7 +60,12 @@ struct SaveGame {
     int padding[0x73F];  // Values 193-2047
     int customSS[0x400]; // Values 2048-3072
 #if RETRO_USE_V6
-    int saveOffsetCD = 4000; // this is taken from v6's InitNativeObjectSystem, but it is extremely weird
+    int initialSaveOffset = 4000; // this is taken from v6's InitNativeObjectSystem, but it is extremely weird
+
+    // CD Offset returns from GET_IDX_SO()
+    int vDPad_CD = 1000; // Handles values 37-42, which correspond to VirtualDPad
+    int tailsUnlockedCD = boxRegion; // GET_IDX_SO(0x10) in PlayerSelectScreen
+
 #endif
 };
 

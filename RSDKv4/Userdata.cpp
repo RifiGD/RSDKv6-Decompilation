@@ -362,83 +362,83 @@ bool WriteSaveRAMData()
 // fuckass function :broken_heart:
 int GET_IDX_SO(int offset){
     switch(offset){
-        case 0:
-        case 1:
-        case 2:
+        case 0: // characterID
+        case 1: // lives
+        case 2: // score
             return offset;
-        case 3:
+        case 3: // scoreBonus
             offset = 3;
             if (Engine.gameType == GAME_SONICCD){
-                offset = 6;
+                offset = 6; // would be specialStageID
             }
         return offset;
-            case 4:
+            case 4: // stageID
             offset = 4;
             if (Engine.gameType == GAME_SONICCD){
-                offset = 3;
+                offset = 3; // would be scoreBonus
             }
             return offset;
-        case 5:
+        case 5: // emeralds -> timeStones in CD
             offset = 5;
             if (Engine.gameType == GAME_SONICCD){
-                offset = 4;
+                offset = 4; // would be stageID
             }
             return offset;
-        case 6:
+        case 6: // specialStageID
             offset = 6;
             if (Engine.gameType == GAME_SONICCD){
-                offset = 5;
+                offset = 5; // would be emeralds
             }
             return offset;
-        case 7:
-            offset = 0x2d;
+        case 7: // unused gets used :pog:
+            offset = 0x2d; // 45 -> regularly unlockedActs
             if (Engine.gameType == GAME_SONICCD){
-                offset = 0x27;
+                offset = 0x27; // 39 -> for CD becomes vDadX_Move?
             }
             return offset;
-        case 0x13:
-            return 7;
+        case 0x13: // 19, used in files[4]
+            return 7; // returns 7
     }
 
     if (offset - 8 < 7){
-        offset += 0x1c;
+        offset += 0x1c; // offset + 28 (inside of files[4])
         if (Engine.gameType == GAME_SONICCD){
-            offset = 1000;
+            offset = 1000; // becomes unused by the save file
         }
         return offset;
     }
 
-    switch(offset - 0xf){
+    switch(offset - 0xf){ // offset - 15
     case 0:
-        offset = 1000;
+        offset = 1000; // unused by save file
         if (Engine.gameType == GAME_SONICCD){
-            offset = 0x26;
+            offset = 0x26; // 38 -> for CD becomes vDPadOpacity
         }
         return offset;
         case 1:
-            offset = 0x2b;
+            offset = 0x2b; // 43 -> usually tailsUnlocked
             if (Engine.gameType == GAME_SONICCD){
-                offset = 0x24;
+                offset = 0x24; // 36 -> for CD becomes boxRegion
             }
             return offset;
 
         case 2:
-            offset = 0x2c;
+            offset = 0x2c; // 44 -> usually knuxUnlocked
             if (Engine.gameType == GAME_SONICCD){
-                offset = 1000;
+                offset = 1000; // becomes unused by the save file, knuckles doesn't exist in CD
             }
             return offset;
 
         case 3:
             offset = 1000;
             if (Engine.gameType == GAME_SONIC2){
-                offset = 0x2e;
+                offset = 0x2e; // 46 -> for S2 becomes unlockedHPZ
             }
             return offset;
 
         default:
-            return offset - 0xf;
-    }
+            return offset - 0xf; // offset - 15
+    } // weirdass function
 }
 #endif
 

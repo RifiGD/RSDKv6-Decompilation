@@ -415,21 +415,24 @@ void InitNativeObjectSystem()
         {
         // this is... weird but it's from the binary i guess
         // the offsets are all set to 4000 if it is sonic cd
-            saveGame->saveOffsetCD    = 0;
-            saveGame->saveOffsetCD    = 64;
-            saveGame->saveOffsetCD    = 160;
-            saveGame->saveOffsetCD    = 56;
-            saveGame->saveOffsetCD    = 184;
-            saveGame->saveOffsetCD    = -56;
-            saveGame->saveOffsetCD    = 188;
+            saveGame->initialSaveOffset    = 0;
+            saveGame->initialSaveOffset    = 64;
+            saveGame->initialSaveOffset    = 160;
+            saveGame->initialSaveOffset    = 56;
+            saveGame->initialSaveOffset    = 184;
+            saveGame->initialSaveOffset    = -56;
+            saveGame->initialSaveOffset    = 188;
         }
     #endif
     #if !RETRO_USE_V6
         saveGame->tailsUnlocked   = Engine.gameType != GAME_SONIC1;
         saveGame->knuxUnlocked    = Engine.gameType != GAME_SONIC1;
     #else
+    if (Engine.gameType == GAME_SONIC1)
         saveGame->tailsUnlocked   = Engine.gameType != GAME_SONIC1 && Engine.gameType != GAME_SONICCD;
-        saveGame->knuxUnlocked    = Engine.gameType != GAME_SONIC1 && Engine.gameType != GAME_SONICCD;
+    else if (Engine.gameType == GAME_SONICCD)
+        saveGame->tailsUnlockedCD = false;
+    saveGame->knuxUnlocked    = Engine.gameType != GAME_SONIC1 && Engine.gameType != GAME_SONICCD;
     #endif
         saveGame->unlockedActs    = 0;
         WriteSaveRAMData();
@@ -467,11 +470,11 @@ void InitNativeObjectSystem()
     }
     else
     {
-        if (!saveGame->saveOffsetCD) {
-            saveGame->saveOffsetCD = 60;
-            saveGame->saveOffsetCD = 176;
-            saveGame->saveOffsetCD = -56;
-            saveGame->saveOffsetCD = 180;
+        if (!saveGame->initialSaveOffset) {
+            saveGame->initialSaveOffset = 60;
+            saveGame->initialSaveOffset = 176;
+            saveGame->initialSaveOffset = -56;
+            saveGame->initialSaveOffset = 180;
         }
     }    
 #endif

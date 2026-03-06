@@ -288,10 +288,25 @@ void PlayerSelectScreen_Main(void *objPtr)
 
                     saveGame->files[saveSel->selectedButton - 1].lives          = 3;
                     saveGame->files[saveSel->selectedButton - 1].score          = 0;
+                    #if !RETRO_USE_V6
                     saveGame->files[saveSel->selectedButton - 1].scoreBonus     = 500000;
                     saveGame->files[saveSel->selectedButton - 1].stageID        = 1;
                     saveGame->files[saveSel->selectedButton - 1].emeralds       = 0;
                     saveGame->files[saveSel->selectedButton - 1].specialStageID = 0;
+                    #else
+                    if (Engine.gameType != GAME_SONICCD){
+                        saveGame->files[saveSel->selectedButton - 1].scoreBonus     = 500000;
+                        saveGame->files[saveSel->selectedButton - 1].stageID        = 1;
+                        saveGame->files[saveSel->selectedButton - 1].emeralds       = 0;
+                        saveGame->files[saveSel->selectedButton - 1].specialStageID = 0;                        
+                    }
+                    else{
+                        saveGame->files[saveSel->selectedButton - 1].scoreBonusCD     = 500000;
+                        saveGame->files[saveSel->selectedButton - 1].stageIDCD        = 1;
+                        saveGame->files[saveSel->selectedButton - 1].timeStones       = 0;
+                        saveGame->files[saveSel->selectedButton - 1].specialStageIDCD = 0;
+                    }
+                    #endif
                     WriteSaveRAMData();
                 }
                 SetGlobalVariableByName("options.stageSelectFlag", 0);

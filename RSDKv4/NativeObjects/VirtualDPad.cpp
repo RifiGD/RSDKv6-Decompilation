@@ -5,49 +5,61 @@ void VirtualDPad_Create(void *objPtr)
     RSDK_THIS(VirtualDPad);
     SaveGame *saveGame = (SaveGame *)saveRAM;
 
-    #if RETRO_USE_V6
-    int SaveOffset = 0;
-    #endif
-
     float screenXCenter = SCREEN_CENTERX;
     float screenYCenter = SCREEN_CENTERY;
-
-    #if RETRO_USE_V6
-    SaveOffset = GET_IDX_SO(0xb);
-    self->moveX         = (saveGame->vDPadX_Move + SaveOffset) - screenXCenter;
-    #else
+#if !RETRO_USE_V6
     self->moveX         = saveGame->vDPadX_Move - screenXCenter;
-    #endif
-
-    #if RETRO_USE_V6
-    SaveOffset = GET_IDX_SO(0xc);
-    self->moveY         = -((saveGame->vDPadY_Move + SaveOffset) - screenYCenter);
-    #else
+#else
+    if (Engine.gameType != GAME_SONICCD){
+        self->moveX         = saveGame->vDPadX_Move - screenXCenter;
+    }
+    else {
+        self->moveX         = saveGame->vDPad_CD - screenXCenter;
+    }
+#endif
+#if !RETRO_USE_V6
     self->moveY         = -(saveGame->vDPadY_Move - screenYCenter);
-    #endif
-
-    #if RETRO_USE_V6
-    SaveOffset = GET_IDX_SO(0xd);
-    self->jumpX         = (saveGame->vDPadX_Jump + SaveOffset) + screenXCenter;
-    #else
+#else
+    if (Engine.gameType != GAME_SONICCD){
+        self->moveY         = -(saveGame->vDPadY_Move - screenYCenter);
+    }
+    else {
+        self->moveY         = -(saveGame->vDPad_CD - screenYCenter);
+    }
+#endif
+#if !RETRO_USE_V6
     self->jumpX         = saveGame->vDPadX_Jump + screenXCenter;
-    #endif
-
+#else
+    if (Engine.gameType != GAME_SONICCD){
+        self->jumpX         = saveGame->vDPadX_Jump + screenXCenter;
+    }
+    else {
+        self->jumpX         = saveGame->vDPad_CD + screenXCenter;
+    }
+#endif
     self->pauseY        = 104.0f;
-    
-    #if RETRO_USE_V6
-    SaveOffset = GET_IDX_SO(0xe);
-    self->jumpY         = -((saveGame->vDPadY_Jump + SaveOffset) - screenYCenter);
-    #else
+#if !RETRO_USE_V6
     self->jumpY         = -(saveGame->vDPadY_Jump - screenYCenter);
-    #endif
-
+#else
+    if (Engine.gameType != GAME_SONICCD){
+        self->jumpY         = -(saveGame->vDPadY_Jump - screenYCenter);
+    }
+    else {
+        self->jumpY         = -(saveGame->vDPad_CD - screenYCenter);
+    }
+#endif
     self->pauseX        = screenXCenter - 76.0f;
     self->pauseX_S      = screenXCenter - 52.0f;
     self->moveFinger    = -1;
     self->jumpFinger    = -1;
-
+#if !RETRO_USE_V6
     float dpadSize            = saveGame->vDPadSize * (1 / 256.0f);
+#else
+    float dpadSize            = saveGame->vDPadSize * (1 / 256.0f);
+    if (Engine.gameType == GAME_SONICCD){
+        dpadSize = saveGame->vDPad_CD * (1 / 256.0f);
+    }
+#endif
     self->moveSize            = dpadSize;
     self->jumpSize            = dpadSize;
     self->pressedSize         = dpadSize * 0.85;
@@ -60,19 +72,9 @@ void VirtualDPad_Main(void *objPtr)
 {
     RSDK_THIS(VirtualDPad);
     SaveGame *saveGame = (SaveGame *)saveRAM;
-    #if RETRO_USE_V6
-    int SaveOffset = 0;
-    #endif
 
     if (globalVariables[self->useTouchControls] && (!globalVariables[self->usePhysicalControls] || self->editMode)) {
-
-        #if !RETRO_USE_V6
         if (self->alpha < saveGame->vDPadOpacity) {
-        #else
-        //10 seems to handle the offset for the opacity
-        SaveOffset = GET_IDX_SO(10);
-        if (self->alpha < (saveGame->vDPadOpacity + SaveOffset)) {
-        #endif
             self->alpha += 4;
             if (self->pauseAlpha < 0xFF) {
                 self->pauseAlpha = (self->alpha << 8) / saveGame->vDPadOpacity;
@@ -91,15 +93,7 @@ void VirtualDPad_Main(void *objPtr)
         RenderImage(self->moveX, self->moveY, 160.0, self->moveSize, self->moveSize, 128.0, 128.0, 256.0, 256.0, 0.0, 0.0, self->alpha,
                     self->textureID);
 
-        #if RETRO_USE_V6
-        SaveOffset = GET_IDX_SO(10);
-        #endif
-
-        #if !RETRO_USE_V6
         if (self->alpha != saveGame->vDPadOpacity) {
-        #else
-        if (self->alpha != (saveGame->vDPadOpacity + SaveOffset)) {
-        #endif
             self->offsetX = 0.0;
             self->offsetY = 0.0;
         }
