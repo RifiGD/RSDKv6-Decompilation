@@ -24,6 +24,12 @@ void SaveSelect_Create(void *objPtr)
     MatrixMultiplyF(&self->labelPtr->renderMatrix, &self->matrix1);
     self->labelPtr->useRenderMatrix = true;
 
+    #if RETRO_USE_V6
+    int specialStagePos = 0x80;
+    if (Engine.gameType == GAME_SONICCD)
+        specialStagePos == 0x51;
+    #endif
+
     self->delButton    = CREATE_ENTITY(PushButton);
     self->delButton->x = 384.0;
     self->delButton->y = -16.0;
@@ -55,14 +61,20 @@ void SaveSelect_Create(void *objPtr)
         int stagePos = saveGame->files[i - 1].stageID;
         #if RETRO_USE_V6
         if (Engine.gameType == GAME_SONICCD)
-            stagePos = saveGame->files[i - 1].stageIDCD;
+            stagePos = saveGame->files[i - 1].scoreBonus;
         #endif
+
+        PrintLog("StagePos: %d", stagePos);
+        #if !RETRO_USE_V6
         if (stagePos >= 0x80) {
+        #else
+        if (stagePos >= specialStagePos) {
+        #endif
             #if !RETRO_USE_V6
             SetStringToFont(self->saveButtons[i]->text, strSaveStageList[saveGame->files[i - 1].specialStageID + 19], FONT_LABEL);
             #else
             if (Engine.gameType == GAME_SONICCD)
-                SetStringToFont(self->saveButtons[i]->text, strSaveStageList[saveGame->files[i - 1].specialStageIDCD + 19], FONT_LABEL);
+                SetStringToFont(self->saveButtons[i]->text, strSaveStageList[saveGame->files[i - 1].emeralds + 19], FONT_LABEL);
             else
                 SetStringToFont(self->saveButtons[i]->text, strSaveStageList[saveGame->files[i - 1].specialStageID + 19], FONT_LABEL);
             #endif
@@ -75,7 +87,62 @@ void SaveSelect_Create(void *objPtr)
             if (stagePos - 1 > 18 && Engine.gameType == GAME_SONIC1)
                 SetStringToFont(self->saveButtons[i]->text, strSaveStageList[25], FONT_LABEL);
             else
+                #if !RETRO_USE_V6
                 SetStringToFont(self->saveButtons[i]->text, strSaveStageList[stagePos - 1], FONT_LABEL);
+                #else
+                if (Engine.gameType == GAME_SONICCD){
+                // im crine there's gotta be an easier way to do this
+                switch(stagePos) {
+                // PPZ
+                case 1: case 2: case 3: case 4:     stagePos = 1;  break;
+                case 5: case 6: case 7: case 8:     stagePos = 2;  break;
+                case 9: case 10:                    stagePos = 3;  break;
+
+                // CCZ
+                case 11: case 12: case 13: case 14: stagePos = 4;  break;
+                case 15: case 16: case 17: case 18: stagePos = 5;  break;
+                case 19: case 20:                   stagePos = 6;  break;
+
+                // TTZ
+                case 21: case 22: case 23: case 24: stagePos = 7;  break;
+                case 25: case 26: case 27: case 28: stagePos = 8;  break;
+                case 29: case 30:                   stagePos = 9;  break;
+
+                // QQZ
+                case 31: case 32: case 33: case 34: stagePos = 10; break;
+                case 35: case 36: case 37: case 38: stagePos = 11; break;
+                case 39: case 40:                   stagePos = 12; break;
+
+                // WWZ
+                case 41: case 42: case 43: case 44: stagePos = 13; break;
+                case 45: case 46: case 47: case 48: stagePos = 14; break;
+                case 49: case 50:                   stagePos = 15; break;
+
+                // SSZ
+                case 51: case 52: case 53: case 54: stagePos = 16; break;
+                case 55: case 56: case 57: case 58: stagePos = 17; break;
+                case 59: case 60:                   stagePos = 18; break;
+
+                // MMZ
+                case 61: case 62: case 63: case 64: stagePos = 19; break;
+                case 65: case 66: case 67: case 68: stagePos = 20; break;
+                case 69: case 70:                   stagePos = 21; break;
+                
+                // Special Stages
+                case 84: case 85: case 86: case 87: case 88: stagePos = 22; break;
+                case 89: case 90: case 91: case 92: case 93: stagePos = 23; break;
+                case 94: case 95: case 96: case 97: case 98: stagePos = 24; break;
+                case 99: case 100: case 101: case 102: case 103: stagePos = 25; break;
+                case 104: case 105: case 106: case 107: case 108: stagePos = 26; break;
+                case 109: case 110: case 111: case 112: case 113: stagePos = 27; break;
+                case 114: case 115: case 116: case 117: case 118: stagePos = 28; break; 
+                }
+                SetStringToFont(self->saveButtons[i]->text, strSaveStageList[(stagePos) - 1], FONT_LABEL);
+                }
+                else{
+                SetStringToFont(self->saveButtons[i]->text, strSaveStageList[stagePos - 1], FONT_LABEL);
+                }
+                #endif
             self->saveButtons[i]->state = SUBMENUBUTTON_STATE_SAVEBUTTON_SELECTED;
             self->saveButtons[i]->textY = 2.0;
             self->saveButtons[i]->scale = 0.08;
@@ -94,7 +161,7 @@ void SaveSelect_Create(void *objPtr)
         self->saveButtons[i]->flags   = saveGame->files[i - 1].emeralds;
         #else
         if (Engine.gameType == GAME_SONICCD)
-            self->saveButtons[i]->flags   = saveGame->files[i - 1].timeStones;
+            self->saveButtons[i]->flags   = saveGame->files[i - 1].stageID;
         else
             self->saveButtons[i]->flags   = saveGame->files[i - 1].emeralds;
         #endif
@@ -222,7 +289,7 @@ void SaveSelect_Main(void *objPtr)
                                     }                                    
                                 }
                                 else{
-                                    if (self->selectedButton > SAVESELECT_BUTTON_NOSAVE && saveGame->files[self->selectedButton - 1].stageIDCD > 0) {
+                                    if (self->selectedButton > SAVESELECT_BUTTON_NOSAVE && saveGame->files[self->selectedButton - 1].scoreBonus > 0) {
                                         PlaySfxByName("Menu Select", false);
                                         PlaySfxByName("Select", false);
                                         self->state                                    = SAVESELECT_STATE_DELSETUP;
@@ -253,7 +320,7 @@ void SaveSelect_Main(void *objPtr)
                                     self->state                                = SAVESELECT_STATE_LOADSAVE;                                    
                                 }
                                 else
-                                    if (self->selectedButton > SAVESELECT_BUTTON_NOSAVE && saveGame->files[self->selectedButton - 1].stageIDCD > 0) {
+                                    if (self->selectedButton > SAVESELECT_BUTTON_NOSAVE && saveGame->files[self->selectedButton - 1].scoreBonus > 0) {
                                         StopMusic(true);
                                         self->saveButtons[self->selectedButton]->state = SUBMENUBUTTON_STATE_SAVEBUTTON_UNSELECTED;
                                     }
@@ -318,7 +385,7 @@ void SaveSelect_Main(void *objPtr)
                                 }
                             }
                             else{
-                                if (self->selectedButton > SAVESELECT_BUTTON_NOSAVE && saveGame->files[self->selectedButton - 1].stageIDCD > 0) {
+                                if (self->selectedButton > SAVESELECT_BUTTON_NOSAVE && saveGame->files[self->selectedButton - 1].scoreBonus > 0) {
                                     PlaySfxByName("Menu Select", false);
                                     PlaySfxByName("Select", false);
                                     self->state                                    = SAVESELECT_STATE_DELSETUP;
@@ -345,7 +412,7 @@ void SaveSelect_Main(void *objPtr)
                                 }                                
                             }
                             else{
-                                if (self->selectedButton > SAVESELECT_BUTTON_NOSAVE && saveGame->files[self->selectedButton - 1].stageIDCD > 0) {
+                                if (self->selectedButton > SAVESELECT_BUTTON_NOSAVE && saveGame->files[self->selectedButton - 1].scoreBonus > 0) {
                                     StopMusic(true);
                                     self->saveButtons[self->selectedButton]->state = SUBMENUBUTTON_STATE_SAVEBUTTON_UNSELECTED;
                                 }                                
@@ -531,27 +598,27 @@ void SaveSelect_Main(void *objPtr)
                             }
                         }
                     else
-                        if (saveGame->files[saveSlot].stageIDCD) {
+                        if (saveGame->files[saveSlot].scoreBonus) {
                             self->state = SAVESELECT_STATE_SUBMENU;
                             SetGlobalVariableByName("options.saveSlot", saveSlot);
                             SetGlobalVariableByName("options.gameMode", 1);
                             SetGlobalVariableByName("options.stageSelectFlag", 0);
                             SetGlobalVariableByName("player.lives", saveGame->files[saveSlot].lives);
                             SetGlobalVariableByName("player.score", saveGame->files[saveSlot].score);
-                            SetGlobalVariableByName("player.scoreBonus", saveGame->files[saveSlot].scoreBonusCD);
-                            SetGlobalVariableByName("specialStage.listPos", saveGame->files[saveSlot].specialStageIDCD);
-                            SetGlobalVariableByName("specialStage.timeStones", saveGame->files[saveSlot].timeStones);
+                            SetGlobalVariableByName("player.scoreBonus", saveGame->files[saveSlot].specialStageID);
+                            SetGlobalVariableByName("specialStage.listPos", saveGame->files[saveSlot].emeralds);
+                            SetGlobalVariableByName("specialStage.timeStones", saveGame->files[saveSlot].stageID);
                             SetGlobalVariableByName("lampPostID", 0);
                             SetGlobalVariableByName("starPostID", 0);
                             SetGlobalVariableByName("timeAttack.result",0);
                             debugMode = false;
-                            if (saveGame->files[saveSlot].stageID >= 0x80) {
-                                SetGlobalVariableByName("specialStage.nextZone", saveGame->files[saveSlot].stageIDCD - 0x81);
-                                InitStartingStage(STAGELIST_SPECIAL, saveGame->files[saveSlot].specialStageIDCD, saveGame->files[saveSlot].characterID);
+                            if (saveGame->files[saveSlot].scoreBonus >= 0x51) {
+                                SetGlobalVariableByName("specialStage.nextZone", saveGame->files[saveSlot].scoreBonus - 0x51);
+                                InitStartingStage(STAGELIST_SPECIAL, saveGame->files[saveSlot].emeralds, saveGame->files[saveSlot].characterID);
                             }
                             else {
-                                SetGlobalVariableByName("specialStage.nextZone", saveGame->files[saveSlot].stageIDCD - 1);
-                                InitStartingStage(STAGELIST_REGULAR, saveGame->files[saveSlot].stageIDCD - 1, saveGame->files[saveSlot].characterID);
+                                SetGlobalVariableByName("specialStage.nextZone", saveGame->files[saveSlot].scoreBonus - 1);
+                                InitStartingStage(STAGELIST_REGULAR, saveGame->files[saveSlot].scoreBonus - 1, saveGame->files[saveSlot].characterID);
                             }
                             CREATE_ENTITY(FadeScreen);
                         }
@@ -712,10 +779,10 @@ void SaveSelect_Main(void *objPtr)
                 saveGame->files[self->selectedButton - 1].specialStageID = 0;
                 #else
                 if (Engine.gameType == GAME_SONICCD){
-                    saveGame->files[self->selectedButton - 1].scoreBonusCD     = 500000;
-                    saveGame->files[self->selectedButton - 1].stageIDCD        = 0;
-                    saveGame->files[self->selectedButton - 1].timeStones       = 0;
-                    saveGame->files[self->selectedButton - 1].specialStageIDCD = 0;
+                    saveGame->files[self->selectedButton - 1].specialStageID     = 500000;
+                    saveGame->files[self->selectedButton - 1].scoreBonus        = 0;
+                    saveGame->files[self->selectedButton - 1].stageID       = 0;
+                    saveGame->files[self->selectedButton - 1].emeralds = 0;
                 }
                 else{
                     saveGame->files[self->selectedButton - 1].scoreBonus     = 500000;

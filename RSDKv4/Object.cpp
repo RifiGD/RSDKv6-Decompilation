@@ -428,11 +428,13 @@ void InitNativeObjectSystem()
         saveGame->tailsUnlocked   = Engine.gameType != GAME_SONIC1;
         saveGame->knuxUnlocked    = Engine.gameType != GAME_SONIC1;
     #else
-    if (Engine.gameType == GAME_SONIC1)
-        saveGame->tailsUnlocked   = Engine.gameType != GAME_SONIC1 && Engine.gameType != GAME_SONICCD;
+    if (Engine.gameType == GAME_SONIC1){
+        saveGame->tailsUnlocked   = Engine.gameType != GAME_SONIC1;
+        saveGame->knuxUnlocked    = Engine.gameType != GAME_SONIC1;
+    }
     else if (Engine.gameType == GAME_SONICCD)
-        saveGame->tailsUnlockedCD = false;
-    saveGame->knuxUnlocked    = Engine.gameType != GAME_SONIC1 && Engine.gameType != GAME_SONICCD;
+        saveGame->boxRegion = false; // tailsUnlocked for CD
+        saveGame->initialSaveOffset = false;
     #endif
         saveGame->unlockedActs    = 0;
         WriteSaveRAMData();

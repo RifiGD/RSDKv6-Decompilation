@@ -227,7 +227,7 @@ void ProcessStageSelect()
             // now only start game and stage select, accurate to the dev menu
             // added as original code as well since it isnt exclusive to v6
             // it is just how the dev menu behaves on original releases
-            count = 10;
+            count = 9;
 #endif
 
 #if RETRO_USE_MOD_LOADER

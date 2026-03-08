@@ -29,13 +29,26 @@ struct SaveFile {
     int specialStageID; // Value 6/14/22/30
     int unused;         // Value 7/15/23/31
 
-    #if RETRO_USE_V6
-    // holy shit what the fuck is this im crine
-    int scoreBonusCD = specialStageID; // in CD, scoreBonus is stored in specialStageID's place, and emeralds is stored in the unused int's place. Why? Who knows.
-    int stageIDCD = scoreBonus; // Explanation in SaveSelect_Main
-    int timeStones = stageID; // explanation in SaveSelect_Main
-    int specialStageIDCD = emeralds;
-    #endif
+
+    /*
+    Sonic CD mapping
+
+    0 characterID
+    1 lives
+    2 score
+    3 stageID -> scoreBonus in S1/S2
+    4 specialStageID -> stageID in S1/S2
+    5 timeStones -> emeralds in S1/S2
+    6 scoreBonus -> specialStageID in S1/S2
+    7 unused -> well.
+    */
+    // #if RETRO_USE_V6
+    // // holy shit what the fuck is this im crine
+    // int scoreBonusCD = specialStageID; // in CD, scoreBonus is stored in specialStageID's place, and emeralds is stored in the unused int's place. Why? Who knows.
+    // int stageIDCD = scoreBonus; // Explanation in SaveSelect_Main
+    // int timeStones = stageID; // explanation in SaveSelect_Main
+    // int specialStageIDCD = emeralds;
+    // #endif
 };
 
 struct SaveGame {
@@ -64,7 +77,7 @@ struct SaveGame {
 
     // CD Offset returns from GET_IDX_SO()
     int vDPad_CD = 1000; // Handles values 37-42, which correspond to VirtualDPad
-    int tailsUnlockedCD = boxRegion; // GET_IDX_SO(0x10) in PlayerSelectScreen
+    //int tailsUnlockedCD = boxRegion; // GET_IDX_SO(0x10) in PlayerSelectScreen
 
 #endif
 };

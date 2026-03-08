@@ -97,7 +97,11 @@ void PlayerSelectScreen_Main(void *objPtr)
                                 self->playerID = SAVESEL_KNUX;
                             #endif
                         }
+                        #if !RETRO_USE_V6
                         else if (saveGame->tailsUnlocked) {
+                        #else
+                        else if (saveGame->tailsUnlocked || saveGame->boxRegion){
+                        #endif
                             PlaySfxByName("Menu Move", false);
                             PlaySfxByName("MenuButton", false);
                         #if RETRO_USE_V6
@@ -135,7 +139,11 @@ void PlayerSelectScreen_Main(void *objPtr)
                             }
                         #endif
                         }
+                        #if !RETRO_USE_V6
                         else if (saveGame->tailsUnlocked) {
+                        #else
+                        else if (saveGame->tailsUnlocked || saveGame->boxRegion){
+                        #endif
                             PlaySfxByName("Menu Move", false);
                             PlaySfxByName("MenuButton", false);
 
@@ -151,7 +159,7 @@ void PlayerSelectScreen_Main(void *objPtr)
                     if (Engine.gameType == GAME_SONICCD) {
 
                         if (keyPress.right) {
-                            if (saveGame->tailsUnlocked) {
+                            if (saveGame->tailsUnlocked || saveGame->boxRegion) {
                                 // skip S+T
                                 if (self->playerID == SAVESEL_ST) {
                                     self->playerID = SAVESEL_TAILS;
@@ -165,7 +173,7 @@ void PlayerSelectScreen_Main(void *objPtr)
                             }
                         }
                         else if (keyPress.left) {
-                            if (saveGame->tailsUnlocked) {
+                            if (saveGame->tailsUnlocked || saveGame->boxRegion) {
 
                                 self->playerID--;
                                 // skip S+T
@@ -206,7 +214,11 @@ void PlayerSelectScreen_Main(void *objPtr)
                     else {
                         self->playerID = SAVESEL_SONIC;
                     }
+                    #if !RETRO_USE_V6
                     if (saveGame->tailsUnlocked) {
+                    #else
+                    if (saveGame->tailsUnlocked || saveGame->boxRegion){
+                    #endif
                         if (CheckTouchRect(-84.0, -64.0, 16.0, 16.0) < 0) {
                             if (self->playerID == SAVESEL_ST)
                                 self->playerID = SAVESEL_SONIC;
@@ -301,10 +313,10 @@ void PlayerSelectScreen_Main(void *objPtr)
                         saveGame->files[saveSel->selectedButton - 1].specialStageID = 0;                        
                     }
                     else{
-                        saveGame->files[saveSel->selectedButton - 1].scoreBonusCD     = 500000;
-                        saveGame->files[saveSel->selectedButton - 1].stageIDCD        = 1;
-                        saveGame->files[saveSel->selectedButton - 1].timeStones       = 0;
-                        saveGame->files[saveSel->selectedButton - 1].specialStageIDCD = 0;
+                        saveGame->files[saveSel->selectedButton - 1].specialStageID     = 500000;
+                        saveGame->files[saveSel->selectedButton - 1].scoreBonus        = 1;
+                        saveGame->files[saveSel->selectedButton - 1].stageID       = 0;
+                        saveGame->files[saveSel->selectedButton - 1].emeralds = 0;
                     }
                     #endif
                     WriteSaveRAMData();
@@ -425,8 +437,11 @@ void PlayerSelectScreen_Main(void *objPtr)
         }
         #endif
     }
-
+#if !RETRO_USE_V6
     if (saveGame->tailsUnlocked)
+#else
+    if (saveGame->tailsUnlocked || saveGame->boxRegion)
+#endif
         SetRenderVertexColor(255, 255, 255);
     else
         SetRenderVertexColor(0, 0, 0);
@@ -486,8 +501,11 @@ void PlayerSelectScreen_Main(void *objPtr)
         RenderImage(88.0, 32.0, 8.0, 0.3, 0.3, 128.0, 128.0, 256.0, 256.0, 0.0, 256.0, 0xFF, self->texturePlayerSel);
     }
 #endif
-
+#if !RETRO_USE_V6
     if (saveGame->tailsUnlocked) {
+#else
+    if (saveGame->tailsUnlocked || saveGame->boxRegion){
+#endif
     #if !RETRO_USE_V6
         if (self->playerID == SAVESEL_ST && self->flag) {
     #else
@@ -531,8 +549,11 @@ void PlayerSelectScreen_Main(void *objPtr)
     else
         SetRenderVertexColor(0xFF, 0xFF, 0xFF);
     RenderText(self->textSonic, FONT_TEXT, self->sonicX, -22.0, 8.0, 0.2, 255);
-
+#if !RETRO_USE_V6
     if (saveGame->tailsUnlocked) {
+#else
+    if (saveGame->tailsUnlocked || saveGame->boxRegion){
+#endif
         if ((self->playerID == SAVESEL_TAILS || self->playerID == SAVESEL_ST) && self->flag)
             SetRenderVertexColor(0xFF, 0xFF, 0x40);
         else
