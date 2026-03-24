@@ -314,9 +314,9 @@ void PlayerSelectScreen_Main(void *objPtr)
                     }
                     else{
                         saveGame->files[saveSel->selectedButton - 1].specialStageID     = 500000;
-                        saveGame->files[saveSel->selectedButton - 1].scoreBonus        = 1;
-                        saveGame->files[saveSel->selectedButton - 1].stageID       = 0;
-                        saveGame->files[saveSel->selectedButton - 1].emeralds = 0;
+                        saveGame->files[saveSel->selectedButton - 1].scoreBonus         = 1;
+                        saveGame->files[saveSel->selectedButton - 1].stageID            = 0;
+                        saveGame->files[saveSel->selectedButton - 1].emeralds           = 0;
                     }
                     #endif
                     WriteSaveRAMData();
@@ -328,11 +328,11 @@ void PlayerSelectScreen_Main(void *objPtr)
                 SetGlobalVariableByName("specialStage.listPos", 0);
                 SetGlobalVariableByName("specialStage.emeralds", 0);
                 SetGlobalVariableByName("specialStage.nextZone", 0);
-                SetGlobalVariableByName("timeAttack.result", 0);
                 SetGlobalVariableByName("lampPostID", 0);
                 SetGlobalVariableByName("starPostID", 0);
 #if RETRO_USE_V6
                 if (Engine.gameType == GAME_SONICCD){
+                SetGlobalVariableByName("timeAttack.result", 0);
                 SetGlobalVariableByName("specialStage.timeStones",0);
                 SetGlobalVariableByName("lampPostID",0);
                 SetGlobalVariableByName("starPostID",0);

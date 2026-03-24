@@ -27,7 +27,7 @@ void SaveSelect_Create(void *objPtr)
     #if RETRO_USE_V6
     int specialStagePos = 0x80;
     if (Engine.gameType == GAME_SONICCD)
-        specialStagePos == 0x51;
+        specialStagePos = 0x51;
     #endif
 
     self->delButton    = CREATE_ENTITY(PushButton);
@@ -63,27 +63,28 @@ void SaveSelect_Create(void *objPtr)
         if (Engine.gameType == GAME_SONICCD)
             stagePos = saveGame->files[i - 1].scoreBonus;
         #endif
-
-        PrintLog("StagePos: %d", stagePos);
+        
         #if !RETRO_USE_V6
         if (stagePos >= 0x80) {
         #else
-        if (stagePos >= specialStagePos) {
+        if (stagePos >= 0x80 && Engine.gameType != GAME_SONICCD){
         #endif
-            #if !RETRO_USE_V6
             SetStringToFont(self->saveButtons[i]->text, strSaveStageList[saveGame->files[i - 1].specialStageID + 19], FONT_LABEL);
-            #else
-            if (Engine.gameType == GAME_SONICCD)
-                SetStringToFont(self->saveButtons[i]->text, strSaveStageList[saveGame->files[i - 1].emeralds + 19], FONT_LABEL);
-            else
-                SetStringToFont(self->saveButtons[i]->text, strSaveStageList[saveGame->files[i - 1].specialStageID + 19], FONT_LABEL);
-            #endif
             self->saveButtons[i]->state = SUBMENUBUTTON_STATE_SAVEBUTTON_SELECTED;
             self->saveButtons[i]->textY = 2.0;
             self->saveButtons[i]->scale = 0.08;
             self->deleteEnabled         = true;
         }
-        else if (stagePos > 0) {
+        #if RETRO_USE_V6
+        else if (stagePos >= 0x51 && Engine.gameType == GAME_SONICCD){
+            SetStringToFont(self->saveButtons[i]->text, strSaveStageList[saveGame->files[i - 1].emeralds + 21], FONT_LABEL);
+            self->saveButtons[i]->state = SUBMENUBUTTON_STATE_SAVEBUTTON_SELECTED;
+            self->saveButtons[i]->textY = 2.0;
+            self->saveButtons[i]->scale = 0.08;
+            self->deleteEnabled         = true;            
+        }
+        #endif
+        else if (stagePos > 0) { // >
             if (stagePos - 1 > 18 && Engine.gameType == GAME_SONIC1)
                 SetStringToFont(self->saveButtons[i]->text, strSaveStageList[25], FONT_LABEL);
             else
@@ -127,17 +128,8 @@ void SaveSelect_Create(void *objPtr)
                 case 61: case 62: case 63: case 64: stagePos = 19; break;
                 case 65: case 66: case 67: case 68: stagePos = 20; break;
                 case 69: case 70:                   stagePos = 21; break;
-                
-                // Special Stages
-                case 84: case 85: case 86: case 87: case 88: stagePos = 22; break;
-                case 89: case 90: case 91: case 92: case 93: stagePos = 23; break;
-                case 94: case 95: case 96: case 97: case 98: stagePos = 24; break;
-                case 99: case 100: case 101: case 102: case 103: stagePos = 25; break;
-                case 104: case 105: case 106: case 107: case 108: stagePos = 26; break;
-                case 109: case 110: case 111: case 112: case 113: stagePos = 27; break;
-                case 114: case 115: case 116: case 117: case 118: stagePos = 28; break; 
                 }
-                SetStringToFont(self->saveButtons[i]->text, strSaveStageList[(stagePos) - 1], FONT_LABEL);
+                SetStringToFont(self->saveButtons[i]->text, strSaveStageList[stagePos - 1], FONT_LABEL);
                 }
                 else{
                 SetStringToFont(self->saveButtons[i]->text, strSaveStageList[stagePos - 1], FONT_LABEL);
