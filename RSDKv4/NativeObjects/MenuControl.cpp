@@ -380,7 +380,6 @@ void MenuControl_Main(void *objPtr)
                             SetGlobalVariableByName("goodFuture.list",0);
                             SetGlobalVariableByName("metalSonic.list",0);
 #if !RETRO_USE_ORIGINAL_CODE
-                            BackupNativeObjects();
                             int id = GetSceneID(STAGELIST_PRESENTATION, "TIME ATTACK");
                             if (id == -1)
                                 id = 3;
