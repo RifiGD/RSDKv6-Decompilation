@@ -300,35 +300,14 @@ void InitLocalizedStrings()
     }
     strExitGame       = ReadLocalizedString("ExitGame", langStr, "Data/Game/StringList.txt");
     strNetworkMessage = ReadLocalizedString("NetworkMessage", langStr, "Data/Game/StringList.txt");
-    #if RETRO_USE_V6 // add back the !
     for (int i = 0; i < 16; ++i) {
         char buffer[0x10];
         sprintf(buffer, "StageName%d", i + 1);
 
         strStageList[i] = ReadLocalizedString(buffer, "en", "Data/Game/StringList.txt");
     }
-    #else
-    // 8 StageNames in Sonic 1 and Sonic CD
-    if (Engine.gameType != GAME_SONIC2)
-        for (int i = 0; i < 8; ++i) {
-            char buffer[0x10];
-            sprintf(buffer, "StageName%d", i + 1);
-
-            strStageList[i] = ReadLocalizedString(buffer, "en", "Data/Game/StringList.txt");
-        }
-    else
-    // else, Sonic 2
-        for (int i = 0; i < 11; ++i) {
-            char buffer[0x10];
-            sprintf(buffer, "StageName%d", i + 1);
-
-            strStageList[i] = ReadLocalizedString(buffer, "en", "Data/Game/StringList.txt");
-        }
-    // this will hopefully eliminate somewarnings when not finding a StageName        
-    #endif
 
     stageStrCount = 0;
-#if RETRO_USE_V6 // add back the !
     for (int i = 0; i < 32; ++i) {
         char buffer[0x20];
         sprintf(buffer, "SaveStageName%d", i + 1);
@@ -338,43 +317,6 @@ void InitLocalizedStrings()
             break;
         stageStrCount++;
     }
-#else
-    // 25 SaveStageNames across all 3 games
-    for (int i = 0; i < 25; ++i) {
-        char buffer[0x20];
-        sprintf(buffer, "SaveStageName%d", i + 1);
-
-        strSaveStageList[i] = ReadLocalizedString(buffer, "en", "Data/Game/StringList.txt");
-        if (!strSaveStageList[i])
-            break;
-        stageStrCount++;
-    }
-    if (Engine.gameType == GAME_SONIC1){
-        char buffer[0x20];
-        sprintf(buffer, "SaveStageName%d", 25 + 1);
-
-        strSaveStageList[25] = ReadLocalizedString(buffer, "en", "Data/Game/StringList.txt");
-    }
-    else{
-        if (Engine.gameType != GAME_SONICCD){
-            // 26
-            char buffer[0x20];
-            sprintf(buffer, "SaveStageName%d", 25 + 1);
-
-            strSaveStageList[25] = ReadLocalizedString(buffer, "en", "Data/Game/StringList.txt");
-            
-            // 27
-            sprintf(buffer, "SaveStageName%d", 26 + 1);
-
-            strSaveStageList[26] = ReadLocalizedString(buffer, "en", "Data/Game/StringList.txt");
-
-            //28
-            sprintf(buffer, "SaveStageName%d", 27 + 1);
-
-            strSaveStageList[27] = ReadLocalizedString(buffer, "en", "Data/Game/StringList.txt");    
-        }
-    }
-#endif
     strNewBestTime   = ReadLocalizedString("NewBestTime", langStr, "Data/Game/StringList.txt");
     strRecords       = ReadLocalizedString("Records", langStr, "Data/Game/StringList.txt");
     strNextAct       = ReadLocalizedString("NextAct", langStr, "Data/Game/StringList.txt");

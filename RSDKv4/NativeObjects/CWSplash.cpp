@@ -150,9 +150,9 @@ void CWSplash_Main(void *objPtr)
     else if (self->state == CWSPLASH_STATE_SPAWNTITLE){
         self->rectAlpha += 300.0 * Engine.deltaTime;
         if (512.0 < self->rectAlpha){
-            // the next two lines are swapped in the original binary
-            self->state = CWSPLASH_STATE_8; // what the fuck
             ResetNativeObject(self, MenuControl_Create, MenuControl_Main);
+            // automatically sets MenuControl's state to ACTION
+            self->state = CWSPLASH_STATE_MENUCONTROL_ACTION;
             return;
         }
     }

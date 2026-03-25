@@ -76,9 +76,7 @@ void MenuControl_Create(void *objPtr)
         usePhysicalControls = true;
     BackupNativeObjects();
     #if RETRO_USE_V6
-    self->state = MENUCONTROL_STATE_ACTION;
     ClearTouches();
-    self->stateInput = MENUCONTROL_STATEINPUT_CHECKTOUCH;
     #endif
 }
 void MenuControl_Main(void *objPtr)
@@ -593,6 +591,17 @@ void MenuControl_Main(void *objPtr)
             }
             break;
         }
+    #if RETRO_USE_V6
+        case MENUCONTROL_STATE_AUTOMAIN: {
+            // literally why do we need a new state for this
+            self->state     = MENUCONTROL_STATE_MAIN;
+        }
+        case MENUCONTROL_STATE_AUTOACTION: {
+            // Fun Fact: this is actually used by C.W Splash
+            self->state      = MENUCONTROL_STATE_ACTION;
+            self->stateInput = MENUCONTROL_STATEINPUT_CHECKTOUCH;
+        }
+    #endif
 
         default: break;
     }

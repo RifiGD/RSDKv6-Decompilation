@@ -711,7 +711,9 @@ void RecordsScreen_Main(void *objPtr)
                 self->state      = RECORDSSCREEN_STATE_MAIN;
                 self->rank       = 0;
             }
+        #if RETRO_USE_V6
             ClearTouches();
+        #endif
             break;
         }
         default: break;
