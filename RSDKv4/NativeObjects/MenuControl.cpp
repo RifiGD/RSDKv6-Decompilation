@@ -379,8 +379,16 @@ void MenuControl_Main(void *objPtr)
                             SetGlobalVariableByName("starPostID",0);
                             SetGlobalVariableByName("goodFuture.list",0);
                             SetGlobalVariableByName("metalSonic.list",0);
+#if !RETRO_USE_ORIGINAL_CODE
+                            BackupNativeObjects();
+                            int id = GetSceneID(STAGELIST_PRESENTATION, "TIME ATTACK");
+                            if (id == -1)
+                                id = 3;
                             //the v6 engine uses this function, which ive neatly ported
+                            InitStartingStageMode(STAGELIST_PRESENTATION, id);
+#else
                             InitStartingStageMode(STAGELIST_PRESENTATION, 2);
+#endif
                             CreateNativeObject(FadeScreen_Create, FadeScreen_Main);
                         }
                         else{
