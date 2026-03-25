@@ -141,7 +141,6 @@ void InitStartingStageMode(int list, int stage)
     stageMode         = STAGEMODE_LOAD;
     Engine.gameMode   = ENGINE_MAINGAME;
     stageListPosition = stage;
-
 }
 
 void ProcessStage(void)
