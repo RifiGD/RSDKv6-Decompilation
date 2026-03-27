@@ -88,11 +88,8 @@ void LoadFontFile(const char *filePath)
     }
 }
 #endif
-#if !RETRO_USE_V6
+
 void LoadTextFile(TextMenu *menu, const char *filePath, byte mapCode)
-#else 
-void LoadTextFile(TextMenu *menu, const char *filePath)
-#endif
 {
     FileInfo info;
     byte fileBuffer = 0;

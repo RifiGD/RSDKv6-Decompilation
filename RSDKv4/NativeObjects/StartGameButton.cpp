@@ -12,18 +12,18 @@ void loadCartridgeValue(void *objPtr)
                 self->meshCart = LoadMesh("Data/Game/Models/MegaCDMedia.bin", package);
                 break;
                 
-            // case REGION_US:
-            // //DiscJP_Transparent goes unused as you can't change the region in v6
-            // //according to the original code, it loads the transparent disc texture for US and EU regions
-            // //so imma just follow that logic here
-            //     package        = LoadTexture("Data/Game/Models/DiscJP_Transparent.png", TEXFMT_RGBA5551);
-            //     self->meshCart = LoadMesh("Data/Game/Models/MegaCDMedia.bin", package);
-            //     break;
+            case REGION_US:
+            //DiscJP_Transparent goes unused as you can't change the region in v6
+            //according to the original code, it loads the transparent disc texture for US and EU regions
+            //so imma just follow that logic here
+                package        = LoadTexture("Data/Game/Models/DiscJP_Transparent.png", TEXFMT_RGBA5551);
+                self->meshCart = LoadMesh("Data/Game/Models/MegaCDMedia.bin", package);
+                break;
 
-            // case REGION_EU:
-            //     package        = LoadTexture("Data/Game/Models/DiscJP_Transparent.png", TEXFMT_RGBA5551);
-            //     self->meshCart = LoadMesh("Data/Game/Models/MegaCDMedia.bin", package);
-            //     break;
+            case REGION_EU:
+                package        = LoadTexture("Data/Game/Models/DiscJP_Transparent.png", TEXFMT_RGBA5551);
+                self->meshCart = LoadMesh("Data/Game/Models/MegaCDMedia.bin", package);
+                break;
 
             default:
                 package        = LoadTexture("Data/Game/Models/DiscJP.png", TEXFMT_RGBA5551);

@@ -78,12 +78,7 @@ extern FontCharacter fontCharacterList[FONTCHAR_COUNT];
 
 void LoadFontFile(const char *filePath);
 #endif
-#if !RETRO_USE_V6
 void LoadTextFile(TextMenu *menu, const char *filePath, byte mapCode);
-#else
-//forcing
-void LoadTextFile(TextMenu *menu, const char *filePath);
-#endif
 void LoadConfigListText(TextMenu *menu, int listNo);
 
 void SetupTextMenu(TextMenu *menu, int rowCount);

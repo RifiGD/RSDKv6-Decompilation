@@ -480,7 +480,19 @@ void InitNativeObjectSystem()
         }
     }    
 #endif
+
+    // forgot this my bad broski
+#if !RETRO_USE_V6
     Engine.globalBoxRegion = saveGame->boxRegion;
+#else
+    if (Engine.gameType != GAME_SONICCD)
+            Engine.globalBoxRegion = saveGame->boxRegion;
+    else
+        // Looking through the Ghidra Code...
+        // saveGame->boxRegion actually never gets written
+        // and with the way the logic is written, it'll always force REGION_JP
+            Engine.globalBoxRegion = REGION_JP;
+#endif
     SetGameVolumes(saveGame->musVolume, saveGame->sfxVolume);
 #if !RETRO_USE_ORIGINAL_CODE
     if (skipStartMenu) {
