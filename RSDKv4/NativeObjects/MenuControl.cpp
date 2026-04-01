@@ -380,7 +380,7 @@ void MenuControl_Main(void *objPtr)
 #if !RETRO_USE_ORIGINAL_CODE
                             int id = GetSceneID(STAGELIST_PRESENTATION, "TIME ATTACK");
                             if (id == -1)
-                                id = 3;
+                                id = 2;
                             //the v6 engine uses this function, which ive neatly ported
                             InitStartingStageMode(STAGELIST_PRESENTATION, id);
 #else

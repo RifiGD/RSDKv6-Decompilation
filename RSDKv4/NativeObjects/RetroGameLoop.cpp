@@ -10,8 +10,16 @@ void InitPauseMenu()
 }
 #else
 void InitPauseMenu()
-{
+{   
+#if RETRO_USE_ORIGINAL_CODE
     Engine.gameMode = ENGINE_INITJAVAPAUSE;
+#else
+    // well uhh what's the point of having a Java pause menu if you can't even use it in the first place
+    PauseSound();
+    ClearNativeObjects();
+    CREATE_ENTITY(MenuBG);
+    CREATE_ENTITY(PauseMenu);
+#endif
 }
 #endif
 
@@ -44,6 +52,8 @@ void eventPauseMenuVisible(bool paused, int state)
                 mixFiltersOnJekyll = true;
                 RenderRetroBuffer(0x40,0x43200000);
                 ClearNativeObjects();
+            // this means that even if the build was compiled for MOBILE,
+            // the VirtualDPad object will never return | sad ://
                 CreateNativeObject(RetroGameLoop_Create, RetroGameLoop_Main);
                 ResumeSound();
                 Engine.gameMode = ENGINE_MAINGAME;

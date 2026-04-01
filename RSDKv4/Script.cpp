@@ -1,6 +1,10 @@
 #include "RetroEngine.hpp"
 #include <cmath>
 
+#if RETRO_USE_V6
+int loadTextFileParams = (Engine.gameType == GAME_SONICCD) ? 3 : 2;
+#endif
+
 #if RETRO_USE_COMPILER
 #if !RETRO_REV00
 #define COMMON_SCRIPT_VAR_COUNT (34)
@@ -525,7 +529,7 @@ const FunctionInfo functions[] = {
     FunctionInfo("LoadTextFile", 2),
 #else
     // explanation in ProcessScript
-    FunctionInfo("LoadTextFile", 3),
+    FunctionInfo("LoadTextFile", loadTextFileParams),
 #endif
 #endif
     FunctionInfo("GetTextInfo", 5),
