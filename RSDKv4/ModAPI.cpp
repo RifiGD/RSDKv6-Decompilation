@@ -428,6 +428,11 @@ void RefreshEngine()
     if (strstr(Engine.gameWindowText, "Sonic 1") || Engine.forceSonic1) {
         Engine.gameType = GAME_SONIC1;
     }
+#if RETRO_USE_V6
+    else if (strstr(Engine.gameWindowText, "Sonic CD")){
+        Engine.gameType = GAME_SONICCD;
+    }
+#endif
 
     achievementCount = 0;
     if (Engine.gameType == GAME_SONIC1) {
